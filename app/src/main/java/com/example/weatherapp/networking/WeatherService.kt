@@ -1,26 +1,23 @@
 package com.example.weatherapp.networking
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import com.google.gson.GsonBuilder
 
-import com.google.gson.Gson
+import com.example.weatherapp.modals.WeatherClass
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
 
+//const val API_KEY = "f5f79c7077e3422fb67153224210510"
+interface WeatherService {
 
-
-
-object WeatherService {
-
-    private const val BASE_URL = "https://api.weatherapi.com/v1/"
-
-    fun getInstance() : WeatherInstance {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        return retrofit.create(WeatherInstance::class.java)
-    }
+    @GET("forecast.json")
+    suspend fun getCurrentTemp(
+        @Query("key")key : String ,
+        @Query("q")query : String ,
+        @Query("days")days : Int) : Response<WeatherClass>
 
 }
+
+//api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
+
+//http://api.openweathermap.org/data/2.5/weather?q=London&appid=04e626bec88ddefc3e6fd9eb22e329a2

@@ -4,19 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.GeneratedAdapter
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.adapter.TemperatureAdapter
 import com.example.weatherapp.modals.Hour
-import com.example.weatherapp.networking.WeatherService
-import com.example.weatherapp.repo.WeatherRepository
 import com.example.weatherapp.viewModels.WeatherViewModel
-import com.example.weatherapp.viewModels.WeatherViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var nameOfCity : String
@@ -24,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var mAdapter: TemperatureAdapter
 
     lateinit var list : ArrayList<Pair>
+
+    private val viewModel: WeatherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +35,6 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = layoutManager
         recycler.adapter = mAdapter
 
-        val weatherInstance = WeatherService.getInstance()
-        val repository = WeatherRepository(weatherInstance)
-        val viewModel = ViewModelProvider(this, WeatherViewModelFactory(repository)).get(WeatherViewModel::class.java)
-
         button.setOnClickListener {
             nameOfCity = editText.text.toString()
             editText.visibility = View.GONE
@@ -47,15 +43,8 @@ class MainActivity : AppCompatActivity() {
             city.visibility = View.VISIBLE
         }
 
-        city.setOnClickListener {
-            editText.visibility = View.VISIBLE
-            button.visibility = View.VISIBLE
-            city.visibility = View.GONE
-            editText.text.clear()
-        }
-
         val cityList = ArrayList<String>()
-        temperature.setOnClickListener {
+        city.setOnClickListener {
             cityList.add(city.text.toString())
         }
 
